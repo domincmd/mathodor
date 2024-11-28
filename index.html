@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathodor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="general-container">
+    <div class="dice-container" style="display: none;">
+        <table>
+            <!-- First row with two columns -->
+            <tr>
+              <td class="goal-td">8<div class="goal-operator">-</span></td>
+            </tr>
+        
+            <!-- Second row with five columns -->
+            <tr>
+              <td class="2-number-td number">1</td>
+              <td class="3-number-td number">2</td>
+              <td class="1-number-td number">0</td>
+              <td class="4-number-td number">3</td>
+              <td class="5-number-td number">4</td>
+            </tr>
+            <tr>
+                <td class="addition-operator operator">+</td>
+                <td class="subtraction-operator operator">-</td>
+              </tr>
+              <tr>
+                <td class="multiplication-operator operator">*</td>
+                <td class="division-operator operator">/</td>
+              </tr>
+        </table>
+        <button class="reset-button">clear numbers</button>
+    </div>
+    <div class="quiz-container">
+      <div class="question-container">
+        Something here...
+      </div>
+      <div class="numpad-container">
+        <h3>Resposta:</h3>
+        <input type="text" class="numpad-answer">
+        <div class="numpad-numbers">
+          <button class="numpad-button numpad-button-1">1</button>
+          <button class="numpad-button numpad-button-2">2</button>
+          <button class="numpad-button numpad-button-3">3</button>
+          <button class="numpad-button numpad-button-4">4</button>
+          <button class="numpad-button numpad-button-5">5</button>
+          <button class="numpad-button numpad-button-6">6</button>
+          <button class="numpad-button numpad-button-7">7</button>
+          <button class="numpad-button numpad-button-8">8</button>
+          <button class="numpad-button numpad-button-9">9</button>
+          <button class="numpad-button numpad-button-clear">Limpar</button>
+          <button class="numpad-button numpad-button-0">0</button>
+          <button class="numpad-button numpad-button-submit">Responder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="dice.js"></script>
+<script src="game.js"></script>
+<script src="numpad.js"></script>
+</html>
