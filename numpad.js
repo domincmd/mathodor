@@ -1,8 +1,17 @@
+const quizContainer = document.querySelector(".quiz-container")
+
 function createNumpadQuestion(question, answer) {
+    quizContainer.style.display = "block"
+    
+    
     const numpadContainer = document.querySelector(".numpad-container")
     const numpadNumbers = document.querySelectorAll(".numpad-button")
     const numpadAnswer = document.querySelector(".numpad-answer")
+    const questionContainer = document.querySelector(".question-container")
 
+    questionContainer.innerHTML = question;
+
+    
 
 
     function numberClicked(number) {
@@ -18,8 +27,15 @@ function createNumpadQuestion(question, answer) {
                 numberClicked(parseInt(number.innerText))
             }else{
                 if (number.innerText == "Responder") {
-                    alert("respondendo " + numpadAnswer.value)
-                    return;
+                    
+                    if (numpadAnswer.value.toLowerCase() == answer) {
+                        quizContainer.style.display = "none"
+                        alert("acertou poha")
+                        return
+
+                    }else{
+                        alert("errou poha")
+                    }
                 }
                 if (number.innerText == "Limpar") {
                     numpadAnswer.value = "";
@@ -30,5 +46,4 @@ function createNumpadQuestion(question, answer) {
     })
 }
 
-
-createNumpadQuestion()
+quizContainer.style.display = "none"
