@@ -1,182 +1,189 @@
+const diceContainerModel = document.querySelector(".dice-container-model")
+const generalContainer = document.querySelector(".general-container")
+
+
+
 const operatorColors = {
     "+": "rgb(255, 185, 54)",
     "-": "rgb(58, 94, 255)",
     "*": "rgb(255, 0, 0)",
     "/": "rgb(0, 255, 21)"
-}
+};
 
 const operatorPoints = {
     "+": 1,
     "-": 2,
     "*": 1,
     "/": 3
-}
+};
 
-let goalNumber = 8
-let operator = "+"
-let values = [1, 2, 3, 4, 5]
-let timeout = 1000
-let firstTime = false
-
-const diceContainer = document.querySelector(".dice-container");
-const goalNumberContainer = document.querySelector(".goal-td");
-const currentNumberContainer = document.querySelector(".current-td");
-const numberContainers = document.querySelectorAll(".number");
-const operationContainers = document.querySelectorAll(".operator");
-const resetNumberButton = document.querySelector(".reset-button");
-const restartNumberButton = document.querySelector(".restart-button")
-
-
-
-function createDiceQuestion() {
+// Define an asynchronous function
+async function createDiceQuestion(goalNumber, operator, values) {
     return new Promise((resolve) => {
-        setTimeout(() => {
-            // Declaring elements
-            
+        const diceContainer = diceContainerModel.cloneNode(true);
+        diceContainer.classList.replace("dice-container-model", "dice-container");
+        diceContainer.style.display = "block";
+
+        generalContainer.appendChild(diceContainer);
+
+        const numberContainers = diceContainer.querySelectorAll(".number");
+        const operatorContainers = diceContainer.querySelectorAll(".operator");
+        const goalTd = diceContainer.querySelector(".goal-td");
+        const resetButton = diceContainer.querySelector(".reset-button")
+        const restartButton = diceContainer.querySelector(".restart-button");
+        const pointsSpan = document.querySelector(".points")
+
+        let firstNumberI = null;
+        let secondNumberI = null;
+
+        let currentOperator = "+"; // Avoid conflict with parameter `operator`
+        operatorClick(0); // Default to the +
+
+        // Display goal and numbers
+        goalTd.innerHTML = goalNumber;
+        numberContainers.forEach((container, index) => {
+            container.innerHTML = values[index];
+        });
+
+        // Interaction functions
+        function operatorClick(index) {
+            const newOperator = ["+", "-", "*", "/"][index];
+            const newOperatorContainer = operatorContainers[index];
+
+            // Reset old operator styles
+            const oldOperatorContainer =
+            operatorContainers[["+", "-", "*", "/"].indexOf(currentOperator)];
+            oldOperatorContainer.style.backgroundColor = operatorColors[currentOperator];
+            oldOperatorContainer.style.color = "white";
+
+            // Set new operator styles
+            newOperatorContainer.style.backgroundColor = "rgb(100, 100, 100)";
+            newOperatorContainer.style.color = operatorColors[newOperator];
+
+            //play lil sound
+            if (currentOperator != newOperator) { //do not play in the first instance
+                operatorClickSound.play();
+            }
             
 
-            diceContainer.style.display = "block";
+            currentOperator = newOperator;
+        }
 
+        function numberClick(index) {
+            const indexContainer = numberContainers[index];
+
+            // Skip empty cells
+            if (indexContainer.innerText === "") {
+                return;
+            }
+
+            numberClickSound.play();
+
+            if (firstNumberI === null) {
+                firstNumberI = index;
+                console.log("1st: " + index);
+                indexContainer.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+            } else if (secondNumberI === null && index !== firstNumberI) {
+                secondNumberI = index;
+                console.log("2nd: " + index);
+                indexContainer.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+                makeOperation();
+            }
+        }
+
+        // Backend functions
+        function eraseNumbers() {
+            numberContainers.forEach(container => {
+                container.style.background = "transparent"
+            })
             
 
-            resetNumberButton.addEventListener("click", () => {
-                resetNumbers();
+            firstNumberI = null;
+            secondNumberI = null;
+        }
+
+        function makeOperation() {
+            const firstNumberV = parseInt(numberContainers[firstNumberI].innerText);
+            const secondNumberV = parseInt(numberContainers[secondNumberI].innerText);
+
+            const resultNumber = Math.abs(eval(`${firstNumberV} ${currentOperator} ${secondNumberV}`));
+
+
+            const firstNumberContainer = numberContainers[firstNumberI];
+            const secondNumberContainer = numberContainers[secondNumberI];
+
+            // Check if result is valid
+            if (resultNumber % 1 !== 0) {
+                
+                
+                illegalSound.play()
+                firstNumberContainer.style.backgroundColor = "rgba(255, 100, 100, 0.3)"
+                secondNumberContainer.style.backgroundColor = "rgba(255, 100, 100, 0.3)"
+
+                setTimeout(() => {
+                    eraseNumbers();
+                }, 500)
+                
+                return;
+            }
+
+            points += operatorPoints[operator]
+
+            pointsSpan.innerHTML = "Pontos: " + points
+
+            // Update numbers and clear inputs
+            
+
+            firstNumberContainer.innerText = "";
+            secondNumberContainer.innerHTML = resultNumber;
+
+            eraseNumbers();
+
+            // Check for win condition
+            if (resultNumber === goalNumber) {
+                
+                //execute end things here
+
+
+                goalTd.style.color = "orange"
+                goalTd.innerText += " ✔"
+
+                setTimeout(() => {
+                    diceContainer.parentNode.removeChild(diceContainer) //KILL URSELF
+                    resolve();
+                }, 2000)
+                
+            }
+
+            console.log(resultNumber);
+        }
+
+        // Add event listeners
+        numberContainers.forEach((container, index) => {
+            container.addEventListener("click", () => {
+                numberClick(index);
+            });
+        });
+
+        operatorContainers.forEach((container, index) => {
+            container.addEventListener("click", () => {
+                operatorClick(index);
+            });
+        });
+
+        resetButton.addEventListener("click", () => {
+            eraseNumbers()
+            numberClickSound.play()
+            
+        })
+        restartButton.addEventListener("click", () => {
+            
+            numberContainers.forEach((container, index) => {
+                container.innerHTML = values[index];
+                backSound.play()
             });
 
-            let firstNumber = null;
-            let secondNumber = null;
-
-            // Syncing with frontend
-            goalNumberContainer.innerHTML = goalNumber;
-
             
-
-            changeOperator(operator)
-
-            function eraseEverything() {
-                goalNumberContainer.innerHTML = "";
-                numberContainers.forEach((numberContainer) => {
-                    numberContainer.innerHTML = "";
-                });
-            }
-
-            // Function to change the operator
-            function changeOperator(newOperator) {
-                if (!["+", "-", "/", "*"].includes(newOperator)) {
-                    alert("Error: invalid operator");
-                    return;
-                }
-                const oldOperatorContainer = operationContainers[["+", "-", "*", "/"].indexOf(operator)];
-                oldOperatorContainer.style.backgroundColor = operatorColors[operator]
-                oldOperatorContainer.style.color = "white"
-
-                
-                const newOperatorContainer = operationContainers[["+", "-", "*", "/"].indexOf(newOperator)];
-                newOperatorContainer.style.backgroundColor = "rgba(255, 255, 255, 0.3)"
-                newOperatorContainer.style.color = operatorColors[newOperator];
-
-                operator = newOperator;
-
-                
-                
-            }
-
-            // Function to perform the operation
-            function makeOperation(firstNum, secondNum) {
-                const firstNumberValue = parseInt(numberContainers[firstNum].innerText);
-                const secondNumberValue = parseInt(numberContainers[secondNum].innerText);
-
-                const resultNumber = eval(`${firstNumberValue} ${operator} ${secondNumberValue}`);
-
-                if (resultNumber < 0 || resultNumber%1 !== 0) {
-                    resetNumbers();
-                    alert("ya cant do that shit")
-                    return;
-                }
-
-
-
-                numberContainers[firstNumber].innerHTML = "";
-                numberContainers[secondNumber].innerText = resultNumber;
-
-                points += operatorPoints[operator]
-
-                resetNumbers();
-
-                // Check for win condition
-                if (resultNumber === goalNumber) {
-                    eraseEverything();
-                    diceContainer.style.display = "none";
-                    alert("You Won!!!!!!!!!!!!!!!! :):):):))");
-                    resolve(); // Resolve the promise when the goal is reached
-                    return;
-                }
-
-                console.log(goalNumber)
-            }
-
-            // Function to handle number clicks
-            function clickNumber(numberId) {
-                if (numberContainers[numberId].innerText === "") {
-                    console.log("You selected an empty number!");
-                    return;
-                }
-
-                if (firstNumber === null) {
-                    firstNumber = numberId;
-                    numberContainers[numberId].style.backgroundColor = "rgba(255, 255, 255, 0.3)";
-                } else if (secondNumber === null) {
-                    if (firstNumber === numberId) {
-                        alert("ya cant do that shit");
-                        return;
-                    }
-                    secondNumber = numberId;
-                    numberContainers[numberId].style.backgroundColor = "rgba(240, 240, 240, 0.3)";
-                    
-                    makeOperation(firstNumber, secondNumber);
-                }
-                
-                
-            }
-
-            
-
-
-            // Function to reset selected numbers
-            function resetNumbers() {
-                firstNumber = null;
-                secondNumber = null;
-                numberContainers.forEach((numberContainer) => {
-                    numberContainer.style.background = "transparent";
-                });
-            }
-
-            for (let i = 0; i < values.length && i < numberContainers.length; i++) {
-                numberContainers[i].innerText = values[i];
-            }
-
-            
-
-            if (firstTime) {
-                numberContainers.forEach((container, index) => {
-                    container.addEventListener("click", () => clickNumber(index));
-                });
-                
-                operationContainers.forEach((container, index) => {
-                    container.addEventListener("click", () => changeOperator(["+", "-", "*", "/"][index]));
-                });
-                
-                restartNumberButton.addEventListener("click", () => {
-                    resetNumbers();
-                    for (let i = 0; i < values.length && i < numberContainers.length; i++) {
-                        numberContainers[i].innerText = values[i];
-                    }
-                });
-            }            
-
-            // Set the starting values
-            
-        }, timeout)
-        
+        })
     });
 }

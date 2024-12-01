@@ -13,7 +13,7 @@
 body {
     background-color: #3C295B;
     color: white;
-    font-family: Verdana;
+    font-family: Verdana; /*font: lato*/
     
 }
 
@@ -22,6 +22,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    flex-wrap: wrap; /* Allows flex children to wrap */
 }
 
 .dice-container {
@@ -134,19 +135,11 @@ td.division-operator {
     box-sizing: border-box;
 }
 
-button {
-    padding: 5px;
-    margin: 5px;
-    box-sizing: border-box;
-    cursor: pointer;
-    background-color: greenyellow;
-    border: 2px solid green;
-    border-radius: 5px;
-    transition: 0.3s ease;
-}
+
 
 button:hover {
     transform: scale(1.1);
+    background-color: #563d7b;
 }
 
 .points {
@@ -155,4 +148,47 @@ button:hover {
     top: 15px;
     font-weight: bold;
     font-size: 1rem;
+}
+
+button {
+    background-color: #6B4B9A;
+    border: none;
+    border-radius: 0px;
+    color: white;
+    font-weight: bold;
+    transition: 0.3s ease;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 5px;
+    margin: 5px;
+}
+
+button.reset-button, button.restart-button {
+    padding: 15px;
+    margin: 10px;
+}
+
+button.numpad-button.numpad-button-clear {
+    background-color: #37AEC0;
+}
+
+button.numpad-button.numpad-button-submit {
+    background-color: #AEA621;
+}
+
+.quiz-container {
+    width: 600px;
+    display: flex;
+    justify-content: space-around;
+    align-items:baseline;
+    height: auto; /* Ensures it only takes as much height as needed */
+    margin: auto; /* Center horizontally and vertically in parent */
+    text-align: center; /* Helps align text if any */
+}
+
+
+.question-container {
+    max-width: 30%;
+    text-align: center;
+    display: block; /* Block ensures it's treated as a box */
 }

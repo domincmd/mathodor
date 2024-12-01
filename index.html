@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mathodor</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 </head>
 <body>
   <div class="general-container">
     <h1 class="title">Mathodor</h1>
-    <span class="points">Pontos: </span>
-    <div class="dice-container" style="display: none;">
+    <span class="points">Pontos: 0</span>
+    <div class="dice-container-model" style="display: none;">
         <table>
             <!-- First row with two columns -->
             <tr>
@@ -19,9 +20,9 @@
         
             <!-- Second row with five columns -->
             <tr>
-              <td class="2-number-td number">1</td>
-              <td class="3-number-td number">2</td>
-              <td class="1-number-td number">0</td>
+              <td class="1-number-td number">1</td>
+              <td class="2-number-td number">2</td>
+              <td class="3-number-td number">0</td>
               <td class="4-number-td number">3</td>
               <td class="5-number-td number">4</td>
             </tr>
@@ -37,7 +38,7 @@
         <center><button class="reset-button">Limpar números</button>
         <button class="restart-button">Do começo</button></center>
     </div>
-    <div class="quiz-container">
+    <div class="old-quiz-container" style="display: none;">
       <div class="question-container">
         Se isto está aparecendo, estamos com um problema...
       </div>
@@ -63,6 +64,7 @@
   </div>
 </body>
 <script src="dice.js"></script>
-<script src="game.js"></script>
 <script src="numpad.js"></script>
+<script src="game.js"></script>
+
 </html>

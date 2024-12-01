@@ -1,49 +1,70 @@
-const quizContainer = document.querySelector(".quiz-container")
-
-function createNumpadQuestion(question, answer) {
-    quizContainer.style.display = "block"
-    
-    
-    const numpadContainer = document.querySelector(".numpad-container")
-    const numpadNumbers = document.querySelectorAll(".numpad-button")
-    const numpadAnswer = document.querySelector(".numpad-answer")
-    const questionContainer = document.querySelector(".question-container")
-
-    questionContainer.innerHTML = question;
-
-    
+async function createNumpadQuestion(question, answer) {
+    return new Promise((resolve) => {
+        //code here
 
 
-    function numberClicked(number) {
-        console.log(number)
-        numpadAnswer.value += number
-    }
+        const quizContainer = document.querySelector(".old-quiz-container")
+        const quizContainerCopy = quizContainer.cloneNode(true)
+        const generalContainer = document.querySelector(".general-container")
 
+        generalContainer.appendChild(quizContainerCopy)
 
+        quizContainerCopy.classList.replace("old-quiz-container", "quiz-container")
 
-    numpadNumbers.forEach(number => {
-        number.addEventListener("click", () => {
-            if (/^\d+$/.test(number.innerText)) {
-                numberClicked(parseInt(number.innerText))
+        const numpadButtons = quizContainerCopy.querySelectorAll(".numpad-button")
+        const questionContainer = quizContainerCopy.querySelector(".question-container")
+        const numpadAnswer = quizContainerCopy.querySelector(".numpad-answer")
+        const pointsSpan = document.querySelector(".points")
+
+        questionContainer.innerHTML = question
+
+        
+        function clearInput() {
+            numpadAnswer.value = ""
+            backSound.play()
+        }
+
+        function answerQuestion() {
+            const answerPrompt = parseInt(numpadAnswer.value)
+
+            operatorClickSound.play()
+
+            if (answer == answerPrompt) {
+                alert("acertou")
+                points += 2
+                pointsSpan.innerHTML = "Pontos: " + points
+                resolve()
+                quizContainerCopy.parentNode.removeChild(quizContainerCopy) //KILL URSELF
+                
+                
             }else{
-                if (number.innerText == "Responder") {
-                    
-                    if (numpadAnswer.value.toLowerCase() == answer) {
-                        quizContainer.style.display = "none"
-                        alert("acertou poha")
-                        return
+                alert("errou kkk")
+            }
 
-                    }else{
-                        alert("errou poha")
-                    }
-                }
-                if (number.innerText == "Limpar") {
-                    numpadAnswer.value = "";
-                }
+            
+        }
+
+
+        function clickedNumber(index) {
+            numpadAnswer.value += index
+            numberClickSound.play()
+        }
+
+        quizContainerCopy.style.display = "flex"
+
+        numpadButtons.forEach((button, index) => {
+            if (index == 10) {
+                button.addEventListener("click", () => {clickedNumber(0)})
+            }else if (index == 9) {
+                button.addEventListener("click", () => {clearInput()})
+            }else if (index == 11) {
+                button.addEventListener("click", () => {answerQuestion()})
+            }else{
+                button.addEventListener("click", () => {clickedNumber(index+1)})
             }
             
         })
+        
+        
     })
 }
-
-quizContainer.style.display = "none"
