@@ -112,4 +112,4 @@ const questions = createQuestionsArray(diceQuestions, numpadQuestions, 15);
 console.log(questions)
 
 // Call the async loop
-processEntriesSequentially(questions);
+//processEntriesSequentially(questions);

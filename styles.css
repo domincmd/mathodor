@@ -50,9 +50,29 @@ td.number {
     height: 100%;
 }
 
-td.goal-td {
+tr.top-tr > td {
+    border: none;
+}
+
+tr.top-tr {
+    border: 2px solid white;
+    max-width: 100%;
+    box-sizing: border-box;
     font-size: 2.5rem;
+    
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+.goal-td {
     cursor: default;
+    height: auto;
+    padding: 0;
+    margin: 0;
 }
 
 td {
@@ -67,16 +87,15 @@ td {
     user-select: none;
 }
 
-td.goal-td {
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-}
 
 .goal-operator {
     background-color: white;
     border-radius: 50%;
     aspect-ratio: 1/1;
-    width: 20px;
+    font-size: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: black;
     font-weight: bold;
 }
@@ -88,26 +107,30 @@ td.operator {
     align-items: center;
 }
 
-td.addition-operator {
+.addition-operator {
     background-color: rgb(255, 185, 54);
     color: white;
 }
 
-td.subtraction-operator {
+.subtraction-operator {
     background-color: rgb(58, 94, 255);
     color: white;
 }
 
-td.multiplication-operator {
+.multiplication-operator {
     background-color: rgb(255, 0, 0);
     color: white;
     border-bottom-left-radius: 15px;
 }
 
-td.division-operator {
+.division-operator {
     background-color: rgb(0, 255, 21);
     color: white;
     border-bottom-right-radius: 15px;
+}
+
+.solved {
+    filter: brightness(50%);
 }
 
 .numpad-container {
@@ -191,4 +214,17 @@ button.numpad-button.numpad-button-submit {
     max-width: 30%;
     text-align: center;
     display: block; /* Block ensures it's treated as a box */
+}
+.how-to-play {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    background-color: #563d7b;
+    padding: 15px;
+    border-radius: 50%;
+    width: 20px;
+    aspect-ratio: 1/1;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
 }

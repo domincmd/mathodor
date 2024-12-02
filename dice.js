@@ -18,7 +18,7 @@ const operatorPoints = {
 };
 
 // Define an asynchronous function
-async function createDiceQuestion(goalNumber, operator, values) {
+async function createDiceQuestion(goalNumber=8, requiredOperator=null, values=[1, 2, 3, 4, 5]) {
     return new Promise((resolve) => {
         const diceContainer = diceContainerModel.cloneNode(true);
         diceContainer.classList.replace("dice-container-model", "dice-container");
@@ -32,18 +32,32 @@ async function createDiceQuestion(goalNumber, operator, values) {
         const resetButton = diceContainer.querySelector(".reset-button")
         const restartButton = diceContainer.querySelector(".restart-button");
         const pointsSpan = document.querySelector(".points")
+        const topTr = document.querySelector(".top-tr")
 
         let firstNumberI = null;
         let secondNumberI = null;
 
-        let currentOperator = "+"; // Avoid conflict with parameter `operator`
+        let operator = "+"; // Avoid conflict with parameter `operator`
         operatorClick(0); // Default to the +
+
+        let pointsGained = 0
 
         // Display goal and numbers
         goalTd.innerHTML = goalNumber;
         numberContainers.forEach((container, index) => {
             container.innerHTML = values[index];
         });
+
+        const requriedOperatorContainer = document.createElement("div")
+        requriedOperatorContainer.classList.add("goal-operator")
+        requriedOperatorContainer.classList.add({"+": "addition", "-": "subtraction", "*": "multiplication", "/": "division"}[operator] + "-operator")
+        requriedOperatorContainer.textContent = requiredOperator
+        console.log(topTr)
+        goalTd.parentNode.appendChild(requriedOperatorContainer)
+
+        
+
+
 
         // Interaction functions
         function operatorClick(index) {
@@ -52,8 +66,8 @@ async function createDiceQuestion(goalNumber, operator, values) {
 
             // Reset old operator styles
             const oldOperatorContainer =
-            operatorContainers[["+", "-", "*", "/"].indexOf(currentOperator)];
-            oldOperatorContainer.style.backgroundColor = operatorColors[currentOperator];
+            operatorContainers[["+", "-", "*", "/"].indexOf(operator)];
+            oldOperatorContainer.style.backgroundColor = operatorColors[operator];
             oldOperatorContainer.style.color = "white";
 
             // Set new operator styles
@@ -61,12 +75,12 @@ async function createDiceQuestion(goalNumber, operator, values) {
             newOperatorContainer.style.color = operatorColors[newOperator];
 
             //play lil sound
-            if (currentOperator != newOperator) { //do not play in the first instance
+            if (operator != newOperator) { //do not play in the first instance
                 operatorClickSound.play();
             }
             
 
-            currentOperator = newOperator;
+            operator = newOperator;
         }
 
         function numberClick(index) {
@@ -106,7 +120,7 @@ async function createDiceQuestion(goalNumber, operator, values) {
             const firstNumberV = parseInt(numberContainers[firstNumberI].innerText);
             const secondNumberV = parseInt(numberContainers[secondNumberI].innerText);
 
-            const resultNumber = Math.abs(eval(`${firstNumberV} ${currentOperator} ${secondNumberV}`));
+            const resultNumber = Math.abs(eval(`${firstNumberV} ${operator} ${secondNumberV}`));
 
 
             const firstNumberContainer = numberContainers[firstNumberI];
@@ -127,9 +141,14 @@ async function createDiceQuestion(goalNumber, operator, values) {
                 return;
             }
 
-            points += operatorPoints[operator]
+            if (operator == requiredOperator) {
+                requriedOperatorContainer.classList.add("solved")
+                pointsGained+= 3
+            }
 
-            pointsSpan.innerHTML = "Pontos: " + points
+            pointsGained+= operatorPoints[operator]
+
+            
 
             // Update numbers and clear inputs
             
@@ -147,6 +166,10 @@ async function createDiceQuestion(goalNumber, operator, values) {
 
                 goalTd.style.color = "orange"
                 goalTd.innerText += " ✔"
+
+                points += pointsGained
+
+                pointsSpan.innerHTML = "Pontos: " + points
 
                 setTimeout(() => {
                     diceContainer.parentNode.removeChild(diceContainer) //KILL URSELF
@@ -182,7 +205,8 @@ async function createDiceQuestion(goalNumber, operator, values) {
                 container.innerHTML = values[index];
                 backSound.play()
             });
-
+            requriedOperatorContainer.classList.remove("solved")
+            pointsGained = 0
             
         })
     });
